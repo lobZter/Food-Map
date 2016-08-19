@@ -2,6 +2,7 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
 }
 
 #map {
@@ -12,4 +13,64 @@ html, body {
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+#turnplate_box{
+	width: 1200px;
+	height: 1200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -150px;
+    margin-left: -600px;
+}
+
+#turnplate_box canvas{
+	position: absolute;
+}
+
+#myCanvas{
+    left: 0;
+    top: 0;
+	background-color: white;
+	border-radius: 100%;
+}
+
+#myCanvas01, #myCanvas03{
+	left: 200px;
+	top: 200px;
+	z-index: 120;
+}
+
+#myCanvas02{
+	left: 300px;
+	top: 300px;
+	z-index: 80;
+}
+
+#myCanvas{
+    -o-transform:  transform 6s;
+	-ms-transform:  transform 6s;
+	-moz-transform:  transform 6s;
+	-webkit-transform:  transform 6s;
+	transition: transform 6s;
+	-o-transform-origin:  50% 50%;
+	-ms-transform-origin:  50% 50%;
+	-moz-transform-origin:  50% 50%;
+	-webkit-transform-origin:  50% 50%;
+	transform-origin: 50% 50%;
+}
+
+.turnplatw_btn{
+	width: 240px;
+	height: 240px;
+	left: 480px;
+	top: 480px;
+	border-radius: 100%;
+	position: absolute;
+	cursor: pointer;
+	border: none;
+	background: transparent;
+	outline: none;
+	z-index: 160;
 }
