@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>顯示結果</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+	<link rel="stylesheet" href="css/result.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?"></script>
+		<script>
+			function getParameterByName(name) {
+				name = name.replace(/[\[\]]/g, "\\$&");
+		    var url = window.location.href;
+		    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+		    var results = regex.exec(url);
+		    if (!results) return null;
+		    if (!results[2]) return '';
+		    return decodeURIComponent(results[2].replace(/\+/g, " "));
+			}
+			
+			function initialize() {
+				var mapProp = {
+					center: new google.maps.LatLng(getParameterByName("latitude"), getParameterByName("longitude")),
+					zoom: 15,
+					mapTypeId:google.maps.MapTypeId.ROADMAP
+				};
+				var map = new google.maps.Map(document.getElementById("gmap"), mapProp);
+			}
+			
+			$(function(){
+				initialize();
+				$.get("search?" + window.location.search.substring(1), function(data) {
+					console.log(data);
+				});
+			});
+		</script>
+</head>
+<body>
+		<!--<div class="parent">-->
+				<div class="child" id="gmap"></div>
+		<!--</div>-->
+</body>
