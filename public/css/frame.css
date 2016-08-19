@@ -1,0 +1,76 @@
+#header .area {
+	z-index: 30;
+}
+#header nav ul ul {
+	z-index: 11;
+}
+#header {
+	background-color: #BE252C;
+	color: white;
+}
+#header a {
+	color: white;
+	text-decoration: none;
+}
+#header .top-header{
+	position: relative;
+	background-color: #333333;
+}
+#header .top-header{
+	zoom: 1;
+}
+#header .top-header:after {
+	content: ".";
+	display: block;
+	clear: both;
+	height: 0;
+	overflow: hidden;
+	visibility: hidden;
+}
+#header #user{
+	float: right;
+}
+#header #user > li {
+	float: left;
+	margin-left: 1em;
+	list-style: none;
+}
+#header #user > li a{
+	color: #E7E7E7;
+}
+#header #user > li a:hover, #header #user > li a:focus {
+	
+}
+#header .bottom-header {
+	position: relative;
+	top: 4em;
+	background-color: #8F0100;
+	height: 32px;
+	zoom: 1;
+}
+#header #nav > ul > li{
+	border-left:none;
+	float: left;
+	margin-left: 2em;
+	list-style-type: none;
+}
+#header #nav > ul > li > a {
+	cursor: pointer;
+	display: block;
+	height: 32px;
+	line-height: 32px;
+	color: #FFD0C0;
+}
+.content p {
+	margin: 1.2em 0;
+}
+.content * {
+	line-height: 170%;
+}
+
+.content ul, .content ol {
+	margin: 1.2em 0 1.2em 2em;
+}
+.content ul{
+	list-style: disc;
+}
