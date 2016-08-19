@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>一鍵快搜</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+	<link rel="stylesheet" href="css/search.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
 </head>
@@ -12,14 +13,42 @@
   <div id="container" style="height: 100%; width: 100%">
     
     <div class="row">
-      <form action="result.html" class="col offset-s3 s6">
-        <div class="card">
-          <input type="text" name="radius" placeholder="距離(km)" class="validate" style="border-bottom: 0px; margin: 0 0 0 0;">
-        </div>
-        <input type="submit" value="一鍵快搜" class="validate waves-effect waves-light btn">
-      </form>
+      <div class="col offset-s3 s6">
+        <form action="result.html">
+          <div class="row">
+            <div class="card col s8 input-box ">
+              <input type="text" name="radius" placeholder="距離(km)" class="validate card" style="border-bottom: 0px; margin-bottom: 0px">
+              <input type="hidden" name="latitude" id="latitude">
+              <input type="hidden" name="longitude" id="latitude">
+            </div>
+            <div class="col s4 input-box ">
+              <input type="submit" value="一鍵快搜" class="validate waves-effect waves-light btn">
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
     
   </div>
 </body>
 </html>
+
+<script>
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(setPosition);
+    } else {
+      alert("Geolocation is not supported by this browser.")
+    }
+  }
+  function setPosition(position) {
+    $("#latitude").val(position.coords.latitude);
+    $("#longitude").val(position.coords.longitude);
+    console.log("Latitude: " + position.coords.latitude);
+    console.log("Longitude: " + position.coords.longitude);
+  }
+  
+  $(function() {
+    getLocation();
+  });
+</script>
