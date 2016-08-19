@@ -1,0 +1,12 @@
+.parent {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+.child {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    right: 0;
+}
