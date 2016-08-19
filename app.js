@@ -25,8 +25,22 @@ app.get('/search', function(req, res) {
         
         response.on('end', function () {
             var json = JSON.parse(str);
+            /*選一個餐廳*/
+            var len = json.results.length;
+            var random = Math.floor(Math.random() * len);
+            var shopname = json.results[random].name;
+            var loc_lat = json.results[random].geometry.location.lat;
+            var loc_lng = json.results[random].geometry.location.lng;
+            var address = json.results[random].vicinity;
+            var photo = json.results[random].photos;
             
-            res.sendFile(str);
+            var str_to_front = {
+                name : shopname,
+                location : {lat:loc_lat,lng: loc_lng},
+                address : address,
+                photo : photo
+            };
+            res.json(str_to_front);
         });
     }).end();
 });
