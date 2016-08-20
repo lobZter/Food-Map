@@ -1,6 +1,7 @@
 var map;
 var infowindow;
 var service;
+var options = Array(8);
 
 function getLocation() {
 	
@@ -44,17 +45,15 @@ function initMap(myLatlng, radius) {
 	  type: ['restaurant']
 	}, function (results, status) {
 		if (status === google.maps.places.PlacesServiceStatus.OK) {
-			var options = new Array();
 			
 			for(var i=0; i<8; i++) {
 				var random = Math.floor(Math.random() * (results.length + 1));
-				options.push(results[random]);
+				options[i] = results[random];
 				results[random] = results.pop();
 			}
-			console.log(options);
 			
+			console.log(options);
 			initCanvas(options);
-			// createMarker(results[random]);
 		}
 	});
 }
@@ -153,124 +152,105 @@ function initCanvas(options) {
 
 }
 
-//转盘旋转
-function runCup(rotNum){
-	var angles = probability(rotNum);
+function runCup(num){
+	var angles = rotAngle(num);
 	var degValue = 'rotate('+angles+'deg'+')';
 	$('#myCanvas').css('-o-transform',degValue);           //Opera
-	$('#myCanvas').css('-ms-transform',degValue);          //IE浏览器
+	$('#myCanvas').css('-ms-transform',degValue);          //IE
 	$('#myCanvas').css('-moz-transform',degValue);         //Firefox
-	$('#myCanvas').css('-webkit-transform',degValue);      //Chrome和Safari
+	$('#myCanvas').css('-webkit-transform',degValue);      //Chrome Safari
 	$('#myCanvas').css('transform',degValue);
 }
 
-//各奖项对应的旋转角度及中奖公告内容
-function probability(rotNum){
-	//获取随机数
-	var num = parseInt(Math.random()*7);
-	var angles;
-	//概率
-	if ( num == 0 ) {
-		angles = 2160 * rotNum + 1800;
-		// notice = info[0] + info1[0];
-	}
-	//概率
-	else if ( num == 1 ) {
-		angles = 2160 * rotNum + 1845;
-		// notice = info[7] + info1[7];
-	}
-	//概率
-	else if ( num == 2 ) {
-		angles = 2160 * rotNum + 1890;
-		// notice = info[6] + info1[6];
-	}
-	//概率
-	else if ( num == 3 ) {
-		angles = 2160 * rotNum + 1935;
-		// notice = info[5] + info1[5];
-	}
-	//概率
-	else if ( num == 4 ) {
-		angles = 2160 * rotNum + 1980;
-		// notice = info[4] + info1[4];
-	}
-	//概率
-	else if ( num == 5 ) {
-		angles = 2160 * rotNum + 2025;
-		// notice = info[3] + info1[3];
-	}
-	//概率
-	else if ( num == 6 ) {
-		angles = 2160 * rotNum + 2070;
-		// notice = info[2] + info1[2];
-	}
-	//概率
-	else if ( num == 7 ) {
-		angles = 2160 * rotNum + 2115;
-		// notice = info[1] + info1[1];
-	}
+function rotAngle(num){
+	// if (num == 0)	return 1800;
+	// else if (num == 1) return 1845;
+	// else if (num == 2) return 1890;
+	// else if (num == 3) return 1935;
+	// else if (num == 4) return 1980;
+	// else if (num == 5) return 2025;
+	// else if (num == 6) return 2070;
+	// else if (num == 7) return 2115;
 	
-	return angles;
+	
+	if (num == 0)	return 2160 + 2160;
+	else if (num == 1) return 2160 + 2115;
+	else if (num == 2) return 2160 + 2070;
+	else if (num == 3) return 2160 + 2025;
+	else if (num == 4) return 2160 + 1980;
+	else if (num == 5) return 2160 + 1935;
+	else if (num == 6) return 2160 + 1890;
+	else if (num == 7) return 2160 + 1845;
 }
 
 
 $(function() {
-	var rotNum = 0;
-	
 	
 	$('#tupBtn').click(function() {
-		//转盘旋转
-		runCup(rotNum);
-		//转盘旋转过程“开始抽奖”按钮无法点击
+		
+		var num = Math.floor(Math.random()*7);
+		console.log(num);
+		console.log(options[num].name);
+		
+		runCup(num);
 		$('#tupBtn').attr("disabled", true);
-		//旋转次数加一
-		rotNum = rotNum + 1;
-		//“开始抽奖”按钮无法点击恢复点击
+		
 		setTimeout(function() {
-			alert(notice)
 			$('#tupBtn').removeAttr("disabled", true);
 		}, 6000);
+		
+		setTimeout(function() {
+			createMarker(options[num]);
+			// var center = new google.maps.LatLng(
+			// 	options[num].geometry.location.lat,-0.005, 
+			// 	options[num].geometry.location.lng);
+			map.setCenter(options[num].location);
+			$("#turnplate_box").animate({ 
+        top: "+=800px",
+      }, 1500);
+		}, 6500);
+		
 	});
 });
 
 
-// function createMarker(place) {
-// 	console.log(place);
+function createMarker(place) {
+	console.log(place);
 	
-// 	service.getDetails({
-//   	placeId: place.place_id
-// 	}, function(result, status) {
-// 		console.log(result);
+	service.getDetails({
+  	placeId: place.place_id
+	}, function(result, status) {
+		console.log(result);
 		
-// 		var marker = new google.maps.Marker({
-// 		  map: map,
-// 		  position: result.geometry.location
-// 		});
+		var marker = new google.maps.Marker({
+		  map: map,
+		  position: result.geometry.location
+		});
 		
-// 		var infowindowStr;
+		var infowindowStr;
 		
-// 		if (result.photos.length == 0) {
-// 			infowindowStr = "<div style='width: 350px'>" + 
-// 			"<h3 style='margin-top: 0; margin-bottom: 8px'>" + result.name + "</h3>" + 
-// 			result.formatted_address + "</br>" +
-// 			result.formatted_phone_number + "</div>";
-// 		}
-// 		else {
-// 			var photo = result.photos[0].getUrl({'maxWidth': 350, 'maxHeight': 350});
-// 			console.log(photo);
+		if (result.photos.length == 0) {
+			infowindowStr = "<div style='width: 350px'>" + 
+			"<h3 style='margin-top: 0; margin-bottom: 8px'>" + result.name + "</h3>" + 
+			result.formatted_address + "</br>" +
+			result.formatted_phone_number + "</div>";
+		}
+		else {
+			var photo = result.photos[0].getUrl({'maxWidth': 350, 'maxHeight': 350});
+			console.log(photo);
 			
-// 			infowindowStr = "<div><img src='" + photo + "'></div>" + 
-// 				"<div style='width: 350px'><h3 style='margin-top: 0; margin-bottom: 8px'>" + result.name + "</h3>" + 
-// 				result.formatted_address + "</br>" +
-// 				result.formatted_phone_number + "</div>";
-// 		}
+			infowindowStr = "<div><img src='" + photo + "'></div>" + 
+				"<div style='width: 350px'><h3 style='margin-top: 0; margin-bottom: 8px'>" + result.name + "</h3>" + 
+				result.formatted_address + "</br>" +
+				result.formatted_phone_number + "</div>";
+		}
 		
-// 		google.maps.event.addListener(marker, 'click', function() {
-// 		  infowindow.setContent(infowindowStr);
-// 		  infowindow.open(map, this);
-// 		});
-// 	  infowindow.setContent(infowindowStr);
-// 	  infowindow.open(map, marker);
-// 	});
+		google.maps.event.addListener(marker, 'click', function() {
+		  infowindow.setContent(infowindowStr);
+		  infowindow.open(map, this);
+		});
+	  infowindow.setContent(infowindowStr);
+	  infowindow.open(map, marker);
+	});
 
-// }
+}
