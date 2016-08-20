@@ -16,20 +16,18 @@ function getLocation() {
 				lng: position.coords.longitude
 			};
 			
-			initMap(myLatlng);
+			initMap();
 		});
 	} else {
 		alert("Geolocation is not supported by this browser.");
 	}
 }
 
-function initMap(myLatlng) {
+function initMap() {
 	
-	var center = myLatlng;
-	// center.lat -= 0.005;
-
+	console.log(myLatlng.lat);
 	map = new google.maps.Map(document.getElementById('map'), {
-	  center: center,
+	  center: { lat: myLatlng.lat, lng: myLatlng.lng+0.025},
 	  zoom: 15
 	});
 	
@@ -43,12 +41,12 @@ function initMap(myLatlng) {
 	var marker = new google.maps.Marker({
 	  map: map,
 	  position: myLatlng,
-	  icon: "/image/myLoc.png"
+	  icon: "/image/currentLoc.png"
 	});
 	
 	service = new google.maps.places.PlacesService(map);
 	service.nearbySearch({
-		location: center,
+		location: myLatlng,
 	  radius: radius,
 	  type: ['restaurant']
 	}, function (results, status) {
@@ -202,26 +200,28 @@ function createMarker(place) {
 		
 		var marker = new google.maps.Marker({
 		  map: map,
-		  position: result.geometry.location
+		  position: result.geometry.location,
+	  icon: "/image/targetLoc.png"
 		});
 		
-		var infowindowStr;
+		var infowindowStr = "";
+		if (result.photos.length){
+			var photoUrl = result.photos[0].getUrl({'maxWidth': 1000, 'maxHeight': 1000});
+			console.log(photoUrl);
+			infowindowStr += "<div><img src='" + photoUrl + "' width='600'></div>";
+		}
+		infowindowStr += "<div style='height: 100px; padding: 0 24px 0 24px'><h3><strong>" + result.name + "</strong></h3>" +
+			result.formatted_address + "</br>" + result.formatted_phone_number;
+			
+		$.get("googleSearch?q=" + result.name, function(data) {
+		});
 		
-	 infowindowStr = "<button type=\"button\" class=\"btn btn-info btn-lg\" data-toggle=\"modal\" data-target=\"#myModal\">Open Modal</button>";
-		// if (result.photos.length){
-		// 	var photo = result.photos[0].getUrl({'maxWidth': 350, 'maxHeight': 350});
-		// 	console.log(photo);
-		// }
-		// infowindowStr = "<div><img src='" + photo + "'></div>" + 
-		// "<div style='width: 350px'><h3 style='margin-top: 0; margin-bottom: 8px'>" + result.name + "</h3>" + 
-		// result.formatted_address + "</br>" +
-		// result.formatted_phone_number + "</div>"
-		// + "<button class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\">Submit<i class=\"material-icons right\">send</i></button>";
-		
+		$("#infowindow").append(infowindowStr);
 		
 		
 		google.maps.event.addListener(marker, 'click', function() {
 		   $("#myModal").modal();
+		   
 		  // infowindow.setContent(infowindowStr);
 		  // infowindow.open(map, this);
 		});

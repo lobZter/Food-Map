@@ -3,7 +3,9 @@ var app = express();
 var http = require("http").Server(app);
 var https = require("https");
 var urlencode = require('urlencode');
+var request = require('request');
 var apikey = "AIzaSyDtFJs_awDvlStbCYz1PRqGCaq_beLkWjM";
+var cseid = "004560571053577605299:oz1fjdm-qpk";
 
 app.use(express.static(__dirname + "/public"));
 
@@ -42,4 +44,15 @@ app.get('/search', function(req, res) {
         });
     }).end();
 });
+
+app.get('/googleSearch', function(req, res) {
+    var url = "https://www.googleapis.com/customsearch/v1?";
+    url += "key=" + apikey + "&cx=" + cseid + "&q=" + req.query.q;
+    request(url , function (error, response, body) {
+        console.log(body);
+		res.send("ok");
+    });
+
+});
+
 http.listen(process.env.PORT, process.env.IP);
