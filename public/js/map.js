@@ -18,7 +18,6 @@ function getLocation() {
 		alert("Geolocation is not supported by this browser.");
 	}
 }
-
 function initMap(myLatlng, radius) {
 	
 	var center = myLatlng;
@@ -31,12 +30,12 @@ function initMap(myLatlng, radius) {
 	
 	infowindow = new google.maps.InfoWindow();
 	
-	// // 標記目前位置
-	// var marker = new google.maps.Marker({
-	//   map: map,
-	//   position: myLatlng,
-	//   icon: "/image/current-location.png"
-	// });
+	// 標記目前位置
+	var marker = new google.maps.Marker({
+	  map: map,
+	  position: myLatlng,
+	  icon: "/image/kappa.png"
+	});
 	
 	service = new google.maps.places.PlacesService(map);
 	service.nearbySearch({
@@ -47,9 +46,10 @@ function initMap(myLatlng, radius) {
 		if (status === google.maps.places.PlacesServiceStatus.OK) {
 			
 			for(var i=0; i<8; i++) {
-				var random = Math.floor(Math.random() * (results.length + 1));
+				var random = Math.floor(Math.random() * results.length);
 				options[i] = results[random];
-				results[random] = results.pop();
+				//results[random] = results.pop();
+				results.splice(random,1);
 			}
 			
 			console.log(options);
@@ -60,7 +60,7 @@ function initMap(myLatlng, radius) {
 
 function initCanvas(options) {
 	
-	var color = ["#626262", "#787878", "rgba(0,0,0,0.5)", "#DCC722", "white", "#FF4350"];
+	var color = ["rgba(0,0,0,0.4)", "rgba(120,120,120,0.4)", "rgba(0,0,0,0.5)", "white", "white", "#FF4350"];
 	
 	var ctx=document.getElementById('myCanvas').getContext('2d');
 	var ctx1=document.getElementById('myCanvas01').getContext('2d');
@@ -188,7 +188,7 @@ $(function() {
 	
 	$('#tupBtn').click(function() {
 		
-		var num = Math.floor(Math.random()*7);
+		var num = Math.floor(Math.random()*8);
 		console.log(num);
 		console.log(options[num].name);
 		
@@ -204,7 +204,7 @@ $(function() {
 			// var center = new google.maps.LatLng(
 			// 	options[num].geometry.location.lat,-0.005, 
 			// 	options[num].geometry.location.lng);
-			map.setCenter(options[num].location);
+			map.setCenter(options[num].geometry.location);
 			$("#turnplate_box").animate({ 
         top: "+=800px",
       }, 1500);

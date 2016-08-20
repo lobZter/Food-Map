@@ -15,14 +15,12 @@ app.get('/search', function(req, res) {
         host: 'maps.googleapis.com',
         path: '/maps/api/place/nearbysearch/json?types=restaurant&language=zh-TW&keyword=' + keyword + "&radius=" + radius + "&key=" + apikey + "&location=" + location
     };
-    
     https.get(options, function(response) {
         var str = "";
         
         response.on('data', function (chunk) {
             str += chunk;
         });
-        
         response.on('end', function () {
             var json = JSON.parse(str);
             /*選一個餐廳*/
@@ -44,6 +42,4 @@ app.get('/search', function(req, res) {
         });
     }).end();
 });
-
-
 http.listen(process.env.PORT, process.env.IP);
