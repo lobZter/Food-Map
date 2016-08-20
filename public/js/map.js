@@ -1,24 +1,29 @@
 var map;
 var infowindow;
 var service;
+var directionsDisplay;
+var directionsService;
+var myLatlng;
 var options = Array(8);
+var radius = 5000;
 
 function getLocation() {
 	
   if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
-			var myLatlng = {
+			myLatlng = {
 				lat: position.coords.latitude,
 				lng: position.coords.longitude
 			};
 			
-			initMap(myLatlng, 50000);
+			initMap(myLatlng);
 		});
 	} else {
 		alert("Geolocation is not supported by this browser.");
 	}
 }
-function initMap(myLatlng, radius) {
+
+function initMap(myLatlng) {
 	
 	var center = myLatlng;
 	// center.lat -= 0.005;
@@ -28,13 +33,17 @@ function initMap(myLatlng, radius) {
 	  zoom: 15
 	});
 	
+	directionsService = new google.maps.DirectionsService();
+	directionsDisplay = new google.maps.DirectionsRenderer();
+	directionsDisplay.setMap(map);
+	
 	infowindow = new google.maps.InfoWindow();
 	
 	// 標記目前位置
 	var marker = new google.maps.Marker({
 	  map: map,
 	  position: myLatlng,
-	  icon: "/image/kappa.png"
+	  icon: "/image/myLoc.png"
 	});
 	
 	service = new google.maps.places.PlacesService(map);
@@ -183,6 +192,59 @@ function rotAngle(num){
 	else if (num == 7) return 2160 + 1845;
 }
 
+function createMarker(place) {
+	console.log(place);
+	
+	service.getDetails({
+  	placeId: place.place_id
+	}, function(result, status) {
+		console.log(result);
+		
+		var marker = new google.maps.Marker({
+		  map: map,
+		  position: result.geometry.location
+		});
+		
+		var infowindowStr;
+		
+	 infowindowStr = "<button type=\"button\" class=\"btn btn-info btn-lg\" data-toggle=\"modal\" data-target=\"#myModal\">Open Modal</button>";
+		// if (result.photos.length){
+		// 	var photo = result.photos[0].getUrl({'maxWidth': 350, 'maxHeight': 350});
+		// 	console.log(photo);
+		// }
+		// infowindowStr = "<div><img src='" + photo + "'></div>" + 
+		// "<div style='width: 350px'><h3 style='margin-top: 0; margin-bottom: 8px'>" + result.name + "</h3>" + 
+		// result.formatted_address + "</br>" +
+		// result.formatted_phone_number + "</div>"
+		// + "<button class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\">Submit<i class=\"material-icons right\">send</i></button>";
+		
+		
+		
+		google.maps.event.addListener(marker, 'click', function() {
+		   $("#myModal").modal();
+		  // infowindow.setContent(infowindowStr);
+		  // infowindow.open(map, this);
+		});
+	  // infowindow.setContent(infowindowStr);
+	  // infowindow.open(map, marker);
+	});
+	
+
+}
+
+function calcRoute(start, end) {
+  var request = {
+    origin:start,
+    destination:end,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(result, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(result);
+      directionsDisplay.setOptions({suppressMarkers: true});
+    }
+  });
+}
 
 $(function() {
 	
@@ -200,10 +262,11 @@ $(function() {
 		}, 6000);
 		
 		setTimeout(function() {
+			
 			createMarker(options[num]);
-			// var center = new google.maps.LatLng(
-			// 	options[num].geometry.location.lat,-0.005, 
-			// 	options[num].geometry.location.lng);
+			var currentLoc = new google.maps.LatLng(
+				myLatlng.lat, myLatlng.lng);
+			calcRoute(currentLoc, options[num].geometry.location)
 			map.setCenter(options[num].geometry.location);
 			$("#turnplate_box").animate({ 
         top: "+=800px",
@@ -213,44 +276,3 @@ $(function() {
 	});
 });
 
-
-function createMarker(place) {
-	console.log(place);
-	
-	service.getDetails({
-  	placeId: place.place_id
-	}, function(result, status) {
-		console.log(result);
-		
-		var marker = new google.maps.Marker({
-		  map: map,
-		  position: result.geometry.location
-		});
-		
-		var infowindowStr;
-		
-		if (result.photos.length == 0) {
-			infowindowStr = "<div style='width: 350px'>" + 
-			"<h3 style='margin-top: 0; margin-bottom: 8px'>" + result.name + "</h3>" + 
-			result.formatted_address + "</br>" +
-			result.formatted_phone_number + "</div>";
-		}
-		else {
-			var photo = result.photos[0].getUrl({'maxWidth': 350, 'maxHeight': 350});
-			console.log(photo);
-			
-			infowindowStr = "<div><img src='" + photo + "'></div>" + 
-				"<div style='width: 350px'><h3 style='margin-top: 0; margin-bottom: 8px'>" + result.name + "</h3>" + 
-				result.formatted_address + "</br>" +
-				result.formatted_phone_number + "</div>";
-		}
-		
-		google.maps.event.addListener(marker, 'click', function() {
-		  infowindow.setContent(infowindowStr);
-		  infowindow.open(map, this);
-		});
-	  infowindow.setContent(infowindowStr);
-	  infowindow.open(map, marker);
-	});
-
-}
