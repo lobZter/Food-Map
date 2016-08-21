@@ -25,7 +25,6 @@ function getLocation() {
 
 function initMap() {
 	
-	console.log(myLatlng.lat);
 	map = new google.maps.Map(document.getElementById('map'), {
 	  center: { lat: myLatlng.lat, lng: myLatlng.lng+0.025},
 	  zoom: 15
@@ -59,7 +58,6 @@ function initMap() {
 				results.splice(random,1);
 			}
 			
-			console.log(options);
 			initCanvas(options);
 		}
 	});
@@ -112,7 +110,6 @@ function initCanvas(options) {
         ctx.rotate(i*step);
         ctx.font = "Bold 32px Microsoft YaHei";
         ctx.fillStyle = color[3];
-        console.log(options[i].name);
         ctx.textAlign = "center"; 
         ctx.fillText(options[i].name, 0, -460, 240);
         // ctx.font = " 14px Microsoft YaHei";
@@ -170,15 +167,6 @@ function runCup(num){
 }
 
 function rotAngle(num){
-	// if (num == 0)	return 1800;
-	// else if (num == 1) return 1845;
-	// else if (num == 2) return 1890;
-	// else if (num == 3) return 1935;
-	// else if (num == 4) return 1980;
-	// else if (num == 5) return 2025;
-	// else if (num == 6) return 2070;
-	// else if (num == 7) return 2115;
-	
 	
 	if (num == 0)	return 2160 + 2160;
 	else if (num == 1) return 2160 + 2115;
@@ -191,12 +179,10 @@ function rotAngle(num){
 }
 
 function createMarker(place) {
-	console.log(place);
 	
 	service.getDetails({
   	placeId: place.place_id
 	}, function(result, status) {
-		console.log(result);
 		
 		var marker = new google.maps.Marker({
 		  map: map,
@@ -207,14 +193,21 @@ function createMarker(place) {
 		var infowindowStr = "";
 		if (result.photos.length){
 			var photoUrl = result.photos[0].getUrl({'maxWidth': 1000, 'maxHeight': 1000});
-			console.log(photoUrl);
 			infowindowStr += "<div><img src='" + photoUrl + "' width='600'></div>";
 		}
-		infowindowStr += "<div style='height: 100px; padding: 0 24px 0 24px'><h3><strong>" + result.name + "</strong></h3>" +
-			result.formatted_address + "</br>" + result.formatted_phone_number;
+		infowindowStr += "<div style='padding: 0 24px 0 24px; margin-bottom: 24px'>" +
+			"<h3><strong>" + result.name + "</strong></h3>" +
+			"<div style='margin-bottom: 10px'><span class='glyphicon glyphicon-home' aria-hidden='true'></span>&nbsp;&nbsp;&nbsp;" + 
+			result.formatted_address + "</div>" + 
+			"<div style='margin-bottom: 10px'><span class='glyphicon glyphicon-earphone' aria-hidden='true'></span>&nbsp;&nbsp;&nbsp;" + 
+			result.formatted_phone_number + "</div>" + 
+			"<div style='margin-bottom: 10px'><a href='" + result.website + "'>" + 
+			result.website + "</a></div>" + 
+			"</div>";
 			
-		$.get("googleSearch?q=" + result.name, function(data) {
-		});
+		// $.get("googleSearch?q=" + result.name, function(data) {
+			
+		// });
 		
 		$("#infowindow").append(infowindowStr);
 		
@@ -251,8 +244,6 @@ $(function() {
 	$('#tupBtn').click(function() {
 		
 		var num = Math.floor(Math.random()*8);
-		console.log(num);
-		console.log(options[num].name);
 		
 		runCup(num);
 		$('#tupBtn').attr("disabled", true);
